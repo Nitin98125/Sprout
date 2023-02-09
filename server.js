@@ -2,12 +2,11 @@ const mongoose = require("mongoose");
 const app = require("./app");
 const colors = require("colors");
 const ProfileRouter = require("./controllers/ProfileRouter");
-require("dotenv/config");
 
 mongoose.set("strictQuery", true);
 
 mongoose
-  .connect(process.env.DB)
+  .connect("mongodb+srv://nitin:nitin@cluster0.og3ncih.mongodb.net/test")
   .then(() => {
     console.log("Connected".red.bold);
   })
@@ -15,7 +14,7 @@ mongoose
     console.log(err);
   });
 
-const port = process.env.PORT;
+const port = 10000;
 
 // app.use("/profile", ProfileRouter);
 
