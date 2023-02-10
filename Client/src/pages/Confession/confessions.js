@@ -27,6 +27,7 @@ const Confession = (props) => {
         } p-2 text-[20px] text-white font-bold rounded-tl-lg rounded-tr-lg`}
       >
         # Confession {props.id}
+        <div className="text-arial text-[10px] sm-[300px]:text-[15px] sm-[300px]:leading-[30px] sm-[300px]:float-right">Confessed On : {props.date}</div>
       </section>
       <div className="border-2 shadow-md p-4">
         <div>{props.text}</div>

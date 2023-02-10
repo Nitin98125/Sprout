@@ -7,18 +7,26 @@ import TextareaAutosize from "@mui/base/TextareaAutosize";
 import TextField from "@mui/material/TextField";
 import Confession from "./confessions";
 import axios from "axios";
+import moment from "moment-timezone";
 
 const StudentList = [
+  { name: "Today" },
   { name: "Institution" },
   { name: "Express" },
   { name: "Feelings" },
+  // { name: "Most Reacted" },
 ];
 
 const Confess = () => {
   const [alignment, setAlignment] = useState("Feelings");
+  const [enable, setEnabled] = useState(false);
   const handleChange = (event, newAlignment) => {
     setAlignment(newAlignment);
   };
+
+  // const handleChange2 = (event, newConfession) => {
+  //   setSelectConfessions(newConfession);
+  // };
 
   const [confession, setConfession] = useState("");
   const [confessionList, setConfessionList] = useState([]);
@@ -29,38 +37,50 @@ const Confess = () => {
   };
 
   const handlePost = async () => {
-    if(confession===""){
+    if (confession === "") {
       alert("Confession Can't Be EMPTY");
       return;
     }
     try {
+      setEnabled(true);
+      const Time = moment().format("DD/MM/YYYY");
       const data = {
         text: confession,
         confession_no: confessionList.length + 1,
         genre: alignment,
         emojis: 0,
+        confessedOn: Time,
       };
       await axios.post("/confess", data);
-      setConfessionList([...confessionList, data]);
+      setConfessionList([data, ...confessionList]);
       setConfession("");
-      console.log("POSTED");
     } catch {
       console.log("Unable To POST");
+    } finally {
+      setEnabled(false);
     }
   };
 
   useEffect(() => {
     const getdata = async () => {
+      setConfessionList([]);
       const res = await axios.get("/confessionList");
-      setConfessionList(res.data);
+      const revLis = res.data.reverse();
+      setConfessionList(revLis);
     };
     getdata();
   }, []);
 
-  function func(genre) {
+  function func(ele) {
     let c = valueTags.length ? 0 : 1;
     valueTags.forEach((element) => {
-      if (element.name === genre) {
+      if(element.name=='Today'){
+        const Time = moment().format("DD/MM/YYYY");
+        if(ele.confessedOn == Time){
+          c=1;
+        }
+      }
+      else if (element.name === ele.genre) {
         c = 1;
       }
     });
@@ -115,34 +135,55 @@ const Confess = () => {
             </ToggleButtonGroup>
           </div>
           <div className="my-8 text-center">
-            <Button variant="contained" onClick={handlePost}>
+            <Button disabled={enable} variant="contained" onClick={handlePost}>
               POST
             </Button>
           </div>
         </div>
         <div className="border-2 w-[90%] mx-auto py-8 bg-gradient-to-r from-pink-500 to-yellow-500 rounded-lg">
-          <Autocomplete
-            sx={{ width: "90%", margin: "auto",backgroundColor:"white" }}
-            multiple
-            id="tags-outlined"
-            options={StudentList}
-            getOptionLabel={(option) => option.name}
-            filterSelectedOptions
-            onChange={handletags}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Search By Tags"
-                placeholder="Search By Tags"
-              />
-            )}
-          />
+          <div className="flex flex-row justify-center">
+            {/* <ToggleButtonGroup
+              sx={{
+                display: "inline-block",
+                marginTop:"5px"
+              }}
+              color="primary"
+              value={selectConfessions}
+              exclusive
+              onChange={handleChange2}
+              aria-label="Platform"
+            >
+              <ToggleButton value="All">All</ToggleButton>
+              <ToggleButton value="Today">Today</ToggleButton>
+              <ToggleButton value="Most_Liked">Most Liked</ToggleButton>
+            </ToggleButtonGroup> */}
+            <Autocomplete
+              sx={{
+                width: "90%",
+                backgroundColor: "white",
+                display: "inline-block",
+              }}
+              multiple
+              id="tags-outlined"
+              options={StudentList}
+              getOptionLabel={(option) => option.name}
+              filterSelectedOptions
+              onChange={handletags}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Search By Tags"
+                  placeholder="Search By Tags"
+                />
+              )}
+            />
+          </div>
         </div>
       </div>
       <div className="py-2 mx-[5%] w-[90%] absolute my-[400px]">
         {confessionList
           .filter((ele) => {
-            return func(ele.genre);
+            return func(ele);
           })
           .map((data, index) => (
             <Confession
@@ -151,6 +192,7 @@ const Confess = () => {
               text={data.text}
               genre={data.genre}
               emojis={data.emojis}
+              date={data.confessedOn}
               onSelect={handleSelect}
             />
           ))}

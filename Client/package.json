@@ -2,7 +2,7 @@
   "name": "clg_manager",
   "version": "0.1.0",
   "private": true,
-  "proxy":"http://localhost:3000/",
+  "proxy": "http://localhost:5000/",
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
@@ -21,6 +21,7 @@
     "express": "^4.18.2",
     "http-proxy-middleware": "^2.0.6",
     "jsonwebtoken": "^9.0.0",
+    "moment-timezone": "^0.5.40",
     "mongoose": "^6.8.3",
     "nodemailer": "^6.8.0",
     "otp-generator": "^4.0.0",
