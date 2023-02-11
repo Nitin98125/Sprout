@@ -14,7 +14,6 @@ const StudentList = [
   { name: "Institution" },
   { name: "Express" },
   { name: "Feelings" },
-  // { name: "Most Reacted" },
 ];
 
 const Confess = () => {
@@ -31,6 +30,7 @@ const Confess = () => {
   const [confession, setConfession] = useState("");
   const [confessionList, setConfessionList] = useState([]);
   const [valueTags, setValueTags] = useState([]);
+  const [valueSort, setValueSort] = useState([]);
 
   const handleConfess = (event) => {
     setConfession(event.target.value);
@@ -66,7 +66,7 @@ const Confess = () => {
       setConfessionList([]);
       const res = await axios.get("/confessionList");
       const revLis = res.data.reverse();
-      setConfessionList(revLis);
+      setConfessionList(res.data);
     };
     getdata();
   }, []);
@@ -74,13 +74,12 @@ const Confess = () => {
   function func(ele) {
     let c = valueTags.length ? 0 : 1;
     valueTags.forEach((element) => {
-      if(element.name=='Today'){
+      if (element.name == "Today") {
         const Time = moment().format("DD/MM/YYYY");
-        if(ele.confessedOn == Time){
-          c=1;
+        if (ele.confessedOn == Time) {
+          c = 1;
         }
-      }
-      else if (element.name === ele.genre) {
+      } else if (element.name === ele.genre) {
         c = 1;
       }
     });
@@ -89,6 +88,14 @@ const Confess = () => {
 
   const handletags = async (event, value) => {
     setValueTags(value);
+  };
+
+  const handleSort = async (event, value) => {
+    setValueSort(value);
+  };
+
+  const SortedList = () => {
+    return confessionList.reverse();
   };
 
   const handleSelect = async (emoji_id, confess_id, countrec) => {
@@ -162,6 +169,9 @@ const Confess = () => {
                 width: "90%",
                 backgroundColor: "white",
                 display: "inline-block",
+                height: "55px",
+                overflowY: "scroll",
+                // marginRight: "5%",
               }}
               multiple
               id="tags-outlined"
@@ -177,6 +187,28 @@ const Confess = () => {
                 />
               )}
             />
+            {/* <Autocomplete
+              sx={{
+                width: "45%",
+                backgroundColor: "white",
+                display: "inline-block",
+                height: "55px",
+                overflowY: "scroll",
+              }}
+              multiple
+              id="tags-outlined"
+              options={[{ name: "Most Reacted" }]}
+              getOptionLabel={(option) => option.name}
+              filterSelectedOptions
+              onChange={handleSort}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Sort By Reactions"
+                  placeholder="Sort By Reactions"
+                />
+              )}
+            /> */}
           </div>
         </div>
       </div>
