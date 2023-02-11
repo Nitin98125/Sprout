@@ -6,6 +6,7 @@ module.exports.confession = async (req, res) => {
     confession_no: req.body.confession_no,
     genre: req.body.genre,
     emojis: req.body.emojis,
+    confessedOn:req.body.confessedOn,
   });
   await confession.save();
   return res.send(true);
