@@ -6,7 +6,7 @@ const ProfileRouter = require("./controllers/ProfileRouter");
 mongoose.set("strictQuery", true);
 
 mongoose
-  .connect("mongodb+srv://nitin:nitin@cluster0.og3ncih.mongodb.net/test")
+  .connect(process.env.DB || "mongodb+srv://nitin:nitin@cluster0.og3ncih.mongodb.net/test")
   .then(() => {
     console.log("Connected".red.bold);
   })
@@ -14,9 +14,9 @@ mongoose
     console.log(err);
   });
 
-const port = 10000;
+const port = 5000;
 
-// app.use("/profile", ProfileRouter);
+app.use("/profile", ProfileRouter);
 
 app.listen(port, () => {
   console.log(`App Listening on http://localhost:${port}/`.blue.bold);
